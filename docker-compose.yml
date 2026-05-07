@@ -1,6 +1,52 @@
 services:
-  backend:
-    build: .
+  # development service 
+  app-dev:
+    container_name: arete-backend-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.development
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    profiles:
+      - dev
+
+  # production service
+  app-prod:
+    container_name: arete-backend-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    env_file:
+      - .env.production
+    ports:
+      - "8000:3000"
+    depends_on:
+      - db
+    profiles:
+      - prod
+
+  db: 
+    image: postgres:15
+    container_name: arete-db
+    restart: always
+
+    env_file:
+    - .env.development
+    
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - db-data:/var/lib/postgresql
+
+volumes:
+  db-data:
+
+  
       

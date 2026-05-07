@@ -1,0 +1,22 @@
+# stage 1: build the application
+FROM  node:25-alpine as build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+
+# Stage 2: run the application
+FROM  node:25-alpine as production
+
+WORKDIR /app
+
+COPY --from=build /app/dist ./dist
+
+CMD ["npm", "run", "start:prod"]
