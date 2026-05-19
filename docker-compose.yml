@@ -11,7 +11,6 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
     command: sh -c "npx prisma generate && npm run start:dev"
     depends_on:
       - db

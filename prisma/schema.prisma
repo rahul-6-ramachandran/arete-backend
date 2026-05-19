@@ -14,8 +14,18 @@ datasource db {
 
 
 model User {
-  id        String   @id @default(uuid())
+  id String @id @default(cuid()) 
   email     String   @unique
   name      String?
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id String @id @default(cuid())
+  caption   String
+  url       String
+  userId    String
+  user      User  @relation(fields:[userId],references:[id])
   createdAt DateTime @default(now())
 }
