@@ -22,6 +22,13 @@ export class BaseService<T> {
     });
   }
 
+  async update(id: string, data:Partial<T>){
+    return this.model.update({
+      where: { id },
+      data,
+    });
+  }
+
   async delete(id: string) {
     return this.model.delete({
       where: { id },
