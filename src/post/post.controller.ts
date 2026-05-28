@@ -7,8 +7,6 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-
-
   @Get('feed')
   getFeed(
     @Query('cursor') cursor?: string,

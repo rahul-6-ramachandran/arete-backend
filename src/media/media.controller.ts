@@ -1,16 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { Multer } from 'multer';
 
 @Controller('media')
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
-  @Post()
-  create(@Body() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file',{
+    dest: './uploads',
+  }))
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log(file);
+
+    return {
+      success: true,
+      file,
+    };
   }
+ 
 
   @Get()
   findAll() {

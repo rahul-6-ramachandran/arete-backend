@@ -7,9 +7,15 @@ export class BaseService<T> {
   ) {}
 
   async create(data: T) {
-    return this.model.create({
+    try {
+    return await this.model.create({
       data,
     });
+  } catch (error) {
+    console.log(error);
+
+    throw error;
+  }
   }
 
   async findAll() {
