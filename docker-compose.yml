@@ -46,8 +46,17 @@ services:
     volumes:
       - db-data:/var/lib/postgresql
 
+  redis:
+    image: redis:7-alpine
+    container_name: arete-redis
+    ports:
+      - "6379:6379"
+
+    restart: always
+
 volumes:
   db-data:
 
+ 
   
       

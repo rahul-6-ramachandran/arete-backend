@@ -15,15 +15,11 @@ export class MediaController {
   @UseInterceptors(FileInterceptor('file',{
     dest: './uploads',
   }))
-  uploadFile(
+  async uploadFile(
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file);
-
-    return {
-      success: true,
-      file,
-    };
+    return this.mediaService.handleFileUpload(file);
+   
   }
  
 
