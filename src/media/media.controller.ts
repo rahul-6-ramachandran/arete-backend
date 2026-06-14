@@ -23,6 +23,21 @@ export class MediaController {
   }
  
 
+
+  @Post('test-lock')
+testLock() {
+  return this.mediaService.testLock();
+}
+  @Get('queue/stats')
+  getQueueStats() {
+  return this.mediaService.getQueueStats();
+  }
+
+  @Post('test-queue')
+  testQueue() {
+    return this.mediaService.queueTestJobs();
+  }
+
   @Get()
   findAll() {
     return this.mediaService.findAll();

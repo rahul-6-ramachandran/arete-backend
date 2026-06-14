@@ -17,13 +17,20 @@ export class MediaService extends BaseService<CreateMediaDto> {
   async handleFileUpload(file: Express.Multer.File) {
 
     const job = await this.mediaQueue.add(
-    'process-upload',
-    {
-      fileName: file.filename,
-      path: file.path,
-      uploadedAt: Date.now(),
-    },
-  );
+      'process-upload',
+      {
+        fileName: file.filename,
+        path: file.path,
+        uploadedAt: Date.now(),
+      },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      },
+    );
 
   console.log('Job ID:', job.id);
 
@@ -32,4 +39,62 @@ export class MediaService extends BaseService<CreateMediaDto> {
     jobId: job.id,
   };
   }
+  
+  async testLock() {
+
+  await this.mediaQueue.add(
+    'process-upload',
+    {
+      fileName: 'same-file',
+    },
+  );
+
+  await this.mediaQueue.add(
+    'process-upload',
+    {
+      fileName: 'same-file',
+    },
+  );
+
+  return {
+    success: true,
+  };
+}
+  // Observable pattern to get real-time updates on the queue stats
+  async getQueueStats() {
+    const [
+      waiting,
+      active,
+      completed,
+      failed,
+    ] = await Promise.all([
+      this.mediaQueue.getWaitingCount(),
+      this.mediaQueue.getActiveCount(),
+      this.mediaQueue.getCompletedCount(),
+      this.mediaQueue.getFailedCount(),
+    ]);
+
+    return {
+      waiting,
+      active,
+      completed,
+      failed,
+    };
+  }
+
+  // test method to add jobs to the queue simultaneously and test the concurrency and processing
+  async queueTestJobs() {
+  for (let i = 0; i < 5; i++) {
+    await this.mediaQueue.add(
+      'process-upload',
+      {
+        number: i,
+      },
+    );
+  }
+
+  return {
+    queued: 5,
+  };
+}
 }
